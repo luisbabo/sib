@@ -20,6 +20,8 @@ class Dataset:
         label: str (1)
             The label name
         """
+
+        
         if X is None:
             raise ValueError("X cannot be None")
         if y is not None and len(X) != len(y):
