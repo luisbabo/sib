@@ -23,7 +23,7 @@ class KNNRegressor(Model):
         """
         Estima o valor para cada amostra com base na média dos k vizinhos mais próximos.
         """
-        # Array para guardar as previsões (passo 5 aplicado na inicialização e ciclo)
+        # Array para guardar as previsões
         predictions = np.zeros(dataset.shape()[0])
         
         for i in range(dataset.shape()[0]):
