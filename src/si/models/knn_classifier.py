@@ -1,10 +1,14 @@
 import numpy as np
+from si.base.model import Model
+from si.metrics.accuracy import accuracy
 
-class KNNClassifier:
-    def __init__(self, k, distance):
+class KNNClassifier(Model):
+    def __init__(self, k: int, distance):
         """
-        Algoritmo kNN
+        Algoritmo kNN para classificação.
+        
         """
+        super().__init__()
         self.k = k
         self.distance = distance
         self.dataset = None
@@ -13,30 +17,27 @@ class KNNClassifier:
         """
         Guardar o dataset de treino.
         """
+        
         self.dataset = dataset
         return self
 
     def _predict(self, dataset):
         """
-        Estimar a classe para cada uma das amostras com base nos k vizinhos mais próximos.
+        Estimar a classe para cada amostra no dataset de teste.
         """
-        predictions = np.zeros(dataset.shape()[0])
+        predictions = np.zeros(dataset.shape()[0], dtype=object)
         
         for i in range(dataset.shape()[0]):
             sample = dataset.X[i]
             
-            #Calcular a distância
             distances = self.distance(sample, self.dataset.X)
             
-            #Obter os índices dos k exemplos mais similares
             k_nearest_indexes = np.argsort(distances)[:self.k]
             
-            #Recuperar classes
             k_nearest_classes = self.dataset.y[k_nearest_indexes]
             
-            #Obter a classe mais comum
-            unique_classes, counts = np.unique(k_nearest_classes, return_counts=True)
-            most_common_class = unique_classes[np.argmax(counts)]
+            labels, counts = np.unique(k_nearest_classes, return_counts=True)
+            most_common_class = labels[np.argmax(counts)]
             
             predictions[i] = most_common_class
             
@@ -44,9 +45,8 @@ class KNNClassifier:
 
     def _score(self, dataset):
         """
-        Calcular accuracy entre as classes estimadas e as reais.
+        Calcular a accuracy entre as classes estimadas e reais.
         """
-        from si.metrics.accuracy import accuracy
-        
         predictions = self._predict(dataset)
+        
         return accuracy(dataset.y, predictions)
