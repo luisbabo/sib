@@ -112,4 +112,21 @@ class RidgeRegression(Model):
         y_pred = self._predict(dataset)
         return mse(dataset.y, y_pred)
 
+if __name__ == '__main__':
+    from si.io.csv_file import read_csv
+    from si.model_selection.split import train_test_split
     
+    caminho_cpu = "sib/datasets/cpu/cpu.csv"
+    cpu_dataset = read_csv(caminho_cpu, sep=",", features=True, label=True)
+    
+    train_dataset, test_dataset = train_test_split(cpu_dataset, test_size=0.2, random_state=42)
+    
+    ridge = RidgeRegression(l2_penalty=1.0, alpha=0.001, max_iter=2000, patience=5, scale=True)
+    
+    ridge.fit(train_dataset)
+    
+    score_final = ridge.score(test_dataset)
+    custo_final = ridge.cost(test_dataset)
+
+    print(f"Score (MSE): {score_final}")
+    print(f"Cost: {custo_final}")
